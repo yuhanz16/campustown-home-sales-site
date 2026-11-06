@@ -23,6 +23,17 @@
     tfoot th, tfoot td { border-bottom: none; border-top: 2px solid rgba(127, 127, 127, 0.6); }
     .rule { border-left: 4px solid rgba(127, 127, 127, 0.6); padding: 0.25rem 1rem; }
     .status { font-style: italic; }
+    .chart { margin: 2rem 0; }
+    .chart h2 { font-size: 1.25rem; margin-bottom: 1rem; }
+    .bars { display: grid; gap: 0.5rem; }
+    .bar-row { display: grid; grid-template-columns: 9rem 1fr 6rem; gap: 0.75rem; align-items: center; }
+    .bar-label { text-align: right; }
+    .bar-track { height: 1.25rem; background: rgba(127, 127, 127, 0.18); }
+    .bar { height: 100%; background: #3478c8; }
+    .bar-value { font-variant-numeric: tabular-nums; }
+    @media (max-width: 38rem) {
+      .bar-row { grid-template-columns: 7rem 1fr 5.5rem; gap: 0.5rem; font-size: 0.875rem; }
+    }
     footer { margin-top: 3rem; font-size: 0.875rem; opacity: 0.75; }
   </style>
 </head>
@@ -41,6 +52,11 @@
     </p>
 
     <p class="status" id="status">Loading the city figures&hellip;</p>
+
+    <figure class="chart" id="price-chart" hidden>
+      <h2>Median sale price by city</h2>
+      <div class="bars" id="chart-bars" role="img" aria-label="Horizontal bar chart of median sale prices by city"></div>
+    </figure>
 
     <table id="city-table" hidden>
       <caption>Median sale price by city</caption>
@@ -109,18 +125,44 @@
         .then(function (text) {
           var rows = parseCsv(text);
           var body = document.getElementById("city-rows");
+          var bars = document.getElementById("chart-bars");
+          var maximum = Math.max.apply(null, rows.map(function (r) {
+            return parseFloat(r.median_sale_price);
+          }));
           var total = 0;
           rows.forEach(function (r) {
             var tr = document.createElement("tr");
             var sales = parseInt(r.sales, 10);
+            var median = parseFloat(r.median_sale_price);
             total += sales;
             tr.appendChild(td(r.city, false));
             tr.appendChild(td(r.state, false));
             tr.appendChild(td(count.format(sales), true));
-            tr.appendChild(td(money.format(parseFloat(r.median_sale_price)), true));
+            tr.appendChild(td(money.format(median), true));
             body.appendChild(tr);
+
+            var chartRow = document.createElement("div");
+            chartRow.className = "bar-row";
+            var label = document.createElement("div");
+            label.className = "bar-label";
+            label.textContent = r.city + ", " + r.state;
+            var track = document.createElement("div");
+            track.className = "bar-track";
+            var bar = document.createElement("div");
+            bar.className = "bar";
+            bar.style.width = (median / maximum * 100) + "%";
+            bar.setAttribute("aria-hidden", "true");
+            track.appendChild(bar);
+            var value = document.createElement("div");
+            value.className = "bar-value";
+            value.textContent = money.format(median);
+            chartRow.appendChild(label);
+            chartRow.appendChild(track);
+            chartRow.appendChild(value);
+            bars.appendChild(chartRow);
           });
           document.getElementById("total-sales").textContent = count.format(total);
+          document.getElementById("price-chart").hidden = false;
           document.getElementById("city-table").hidden = false;
           status.hidden = true;
         })
