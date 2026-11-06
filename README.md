@@ -38,6 +38,14 @@ https://your-username.github.io/your-repo-name/
 
 _Replace this line. Say which rows you left out and why, and how each figure on the site is defined. "Five things that will bite you" in the description sheet lists the problems to cover._
 
+### City median sale prices
+
+The home page shows the median sale price for each city. Sales under $10,000 are left out. The figures come from `data/city_median_sale_prices.csv`, which `scripts/make_city_median_prices.py` computes from `data/college_town_home_sales.csv`. To rebuild it, run this from the repository root (it needs Python 3 only):
+
+```bash
+python3 scripts/make_city_median_prices.py
+```
+
 ## Tools we used
 
 _Replace this line with your AI coding agent or agents, and any libraries and other tools you used._
