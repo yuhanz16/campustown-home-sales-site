@@ -18,15 +18,18 @@ https://yuhanz16.github.io/campustown-home-sales-site/
 
 ## City median sale prices
 
-(keep the existing section as it is)
+The home page shows the median sale price for each city. Sales under $10,000 are left out. The figures come from `data/city_median_sale_prices.csv`, which `scripts/make_city_median_prices.py` computes from `data/college_town_home_sales.csv`. To rebuild it, run this from the repository root (it needs Python 3 only):
+
+    python3 scripts/make_city_median_prices.py
 
 ## Tools we used
 
-- Claude (AI coding agent) to write the page and the data script
+- Claude Code (AI coding agent) to write the page and the data script
+- GitHub Copilot (AI coding agent) to re-check the numbers and add the bar chart
 - Python 3 (standard library only) for `scripts/make_city_median_prices.py`
 - Plain HTML, CSS, and JavaScript, with no chart library
 - GitHub Pages and GitHub Actions for publishing
 
 ## Citation
 
-(keep as it is)
+College-town home sales dataset, version 1.0 (2026). University of Illinois-Deloitte Foundation Center for Business Emerging Technologies. Data collected March 2026.
